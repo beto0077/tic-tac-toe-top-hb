@@ -1,3 +1,4 @@
+//DOM CONNECTION TEST
 const gameTestScreen = document.querySelector(".game-test-screen");
 
 function addNewChild(parent, childContent, childType) {
@@ -10,14 +11,7 @@ addNewChild(gameTestScreen, "So...");
 addNewChild(gameTestScreen, "Tic");
 addNewChild(gameTestScreen, "Tac");
 addNewChild(gameTestScreen, "Toe");
-
-//const boxGame = ["", "", "", "", "", "", "", "", ""];
-//const boxGame = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-let playerTurn = false;
-let isThereMatch = false;
-let isGameOver = false;
-let gameWinner = "";
-
+//------------------------------------------------------------------------
 const Player = (name, mark) => {
     return { name, mark };
 };
@@ -33,16 +27,16 @@ const gameBoard = (function () {
 })();
 
 const displayController = (function () {
-    const updateGameBoard = () => {
+    const updateGameBoard = (currentBoard) => {
         //console.clear();
         let counter = 0;
         for (let index = 0; index < 3; index++) {
             let row = "";
             for (let indexB = 0; indexB < 3; indexB++) {
                 if (indexB === 2) {
-                    row += `${boxGame[counter]}`;
+                    row += `${currentBoard[counter]}`;
                 } else {
-                    row += `${boxGame[counter]} `;
+                    row += `${currentBoard[counter]} `;
                     row += "| ";
                 }
                 counter++;
@@ -52,9 +46,20 @@ const displayController = (function () {
         console.log("Updated! :)");
     }
 
-    const showGameResults = () => {
+    const promptCreatePlayer = (playerNumber) => {
+        return `Enter the name of player number ${playerNumber} to continue, if you want to play without a name, press enter to continue:`;
+    };
+
+    const promptForPlayer = (currentBoard, player) => {
+        return `${player.name}, indicate the position number where you want to mark ${player.mark}\n
+        | ${currentBoard[0] || "1"} | ${currentBoard[1] || "2"} | ${currentBoard[2] || "3"} |\n
+        | ${currentBoard[3] || "4"} | ${currentBoard[4] || "5"} | ${currentBoard[5] || "6"} |\n
+        | ${currentBoard[6] || "7"} | ${currentBoard[7] || "8"} | ${currentBoard[8] || "9"} |\n`
+    };
+
+    const showGameResults = (isThereMatch, gameWinner) => {
         if (isThereMatch) {
-            const winnerMessage = `${gameWinner} has won the game.\nCongratulations!`;
+            const winnerMessage = `${gameWinner.name} has won the game.\nCongratulations!`;
             console.log(winnerMessage);
             alert(winnerMessage);
         } else {
@@ -63,10 +68,29 @@ const displayController = (function () {
             alert(tieMessage);
         }
     }
-    return { updateGameBoard, showGameResults };
+    return { updateGameBoard, promptCreatePlayer, promptForPlayer, showGameResults };
 })();
 
-const gameController = (function () {
+const gameController = (function (playerFactory, boardModule, displayCtrl) {
+    let players = [];
+    let playerTurn = false;
+    let isThereMatch = false;
+    let isGameOver = false;
+    let gameWinner = null;
+
+    const createPlayers = () => {
+        let playerName = "";
+        for (let index = 1; index <= 2; index++) {
+            if (index === 1) {
+                playerName = prompt(displayCtrl.promptCreatePlayer(index));
+                players.push(playerFactory(playerName || "Player 1", "X"));
+            } else {
+                playerName = prompt(displayCtrl.promptCreatePlayer(index));
+                players.push(playerFactory(playerName || "Player 2", "O"));
+            }
+        }
+    };
+
     const compareCurrentBoardData = (currentBoardPatterns, patternToWin) => {
         for (const currentPattern of currentBoardPatterns) {
             if (currentPattern === patternToWin) {
@@ -75,198 +99,77 @@ const gameController = (function () {
         }
         return false;
     }
-    const checkMatch = () => {
+    const checkMatch = (currentBoard) => {
         const patternX = "XXX";
         const patternO = "OOO";
         const matches = {
-            verticalMatches: [
-                `${board[0]}${board[1]}${board[2]}`,
-                `${board[3]}${board[4]}${board[5]}`,
-                `${board[6]}${board[7]}${board[8]}`,
-            ],
             horizontalMatches: [
-                `${board[0]}${board[3]}${board[6]}`,
-                `${board[1]}${board[4]}${board[7]}`,
-                `${board[2]}${board[5]}${board[8]}`,
+                `${currentBoard[0]}${currentBoard[1]}${currentBoard[2]}`,
+                `${currentBoard[3]}${currentBoard[4]}${currentBoard[5]}`,
+                `${currentBoard[6]}${currentBoard[7]}${currentBoard[8]}`,
+            ],
+            verticalMatches: [
+                `${currentBoard[0]}${currentBoard[3]}${currentBoard[6]}`,
+                `${currentBoard[1]}${currentBoard[4]}${currentBoard[7]}`,
+                `${currentBoard[2]}${currentBoard[5]}${currentBoard[8]}`,
             ],
             diagonalMatches: [
-                `${board[0]}${board[4]}${board[8]}`,
-                `${board[2]}${board[4]}${board[6]}`,
+                `${currentBoard[0]}${currentBoard[4]}${currentBoard[8]}`,
+                `${currentBoard[2]}${currentBoard[4]}${currentBoard[6]}`,
             ],
         }
 
-        for (const patternGroup of Object.values(matches)) {
-            if (compareCurrentBoardData(patternGroup, patternX)) {
-                gameWinner = "Player 1 playing with the mark X";
-                return true;
+        if (playerTurn) {
+            for (const patternGroup of Object.values(matches)) {
+                if (compareCurrentBoardData(patternGroup, patternX)) {
+                    gameWinner = players[0];
+                    return true;
+                }
+            }
+        } else {
+            for (const patternGroup of Object.values(matches)) {
+                if (compareCurrentBoardData(patternGroup, patternO)) {
+                    gameWinner = players[1];
+                    return true;
+                }
             }
         }
-        for (const patternGroup of Object.values(matches)) {
-            if (compareCurrentBoardData(patternGroup, patternO)) {
-                gameWinner = "Player 2 playing with the mark O";
-                return true;
-            }
-        }
+
         return false;
     }
 
-    const checkGameBoard = () => {
-        isThereMatch = checkMatch();
-        if (!board.includes("")) {
+    const checkGameBoard = (currentBoard) => {
+        isThereMatch = checkMatch(currentBoard);
+        if (!currentBoard.includes("")) {
             isGameOver = true;
         }
-        updateGameBoard();
+        displayCtrl.updateGameBoard(currentBoard);
     }
 
     const checkPlayerChoice = (userChoice) => {
-        if ((/^[1-9]$/).test(userChoice) && board[userChoice - 1] === "") {
+        if ((/^[1-9]$/).test(userChoice) && boardModule.getBoard()[userChoice - 1] === "") {
             return true;
         }
         return false;
     }
     const playRound = () => {
+        createPlayers();
         while (!isThereMatch && !isGameOver) {
             playerTurn = !playerTurn;
-            const markType = playerTurn ? "X" : "O";
-            const promptForPlayer = `Player ${playerTurn ? "1" : "2"}, indicate the position number where you want to mark ${markType}\n
-            | ${boxGame[0] || "1"} | ${boxGame[1] || "2"} | ${boxGame[2] || "3"} |\n
-            | ${boxGame[3] || "4"} | ${boxGame[4] || "5"} | ${boxGame[5] || "6"} |\n
-            | ${boxGame[6] || "7"} | ${boxGame[7] || "8"} | ${boxGame[8] || "9"} |\n`;
-            let choice = prompt(promptForPlayer);
+            let choice = prompt(displayCtrl.promptForPlayer(boardModule.getBoard(), playerTurn ? players[0] : players[1]));
             //Safe word to stop the game immediately
             if (choice === "goal") {
                 return;
             };
             while (!checkPlayerChoice(choice)) {
-                choice = prompt(`You must choose a valid and available option from 1 to 9\n${promptForPlayer}`);
+                choice = prompt(`You must choose a valid and available option from 1 to 9\n${displayCtrl.promptForPlayer(boardModule.getBoard(), playerTurn ? players[0] : players[1])}`);
             }
-            boxGame[choice - 1] = markType;
-            checkGameBoard();
+            boardModule.setMark(choice - 1, playerTurn ? players[0].mark : players[1].mark);
+            checkGameBoard(boardModule.getBoard());
         }
-        showGameResults();
+        displayCtrl.showGameResults(isThereMatch, gameWinner);
     }
-    return {};
-})();
+    return { playRound };
+})(Player, gameBoard, displayController);
 
-// function updateGameBoard() {
-//     //console.clear();
-//     let counter = 0;
-//     for (let index = 0; index < 3; index++) {
-//         let row = "";
-//         for (let indexB = 0; indexB < 3; indexB++) {
-//             if (indexB === 2) {
-//                 row += `${boxGame[counter]}`;
-//             } else {
-//                 row += `${boxGame[counter]} `;
-//                 row += "| ";
-//             }
-//             counter++;
-//         }
-//         console.log(row);
-//     }
-//     console.log("Updated! :)");
-// }
-
-// function compareCurrentGameData(currentTablePatterns, patternToWin) {
-//     for (const currentPattern of currentTablePatterns) {
-//         //console.log(`${currentPattern} === ${patternToWin} => ${currentPattern === patternToWin}`);
-//         if (currentPattern === patternToWin) {
-//             //console.log(`There's a pattern match!`);
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-// function checkMatch() {
-//     const patternX = "XXX";
-//     const patternO = "OOO";
-//     const matches = {
-//         verticalMatches: [
-//             `${boxGame[0]}${boxGame[1]}${boxGame[2]}`,
-//             `${boxGame[3]}${boxGame[4]}${boxGame[5]}`,
-//             `${boxGame[6]}${boxGame[7]}${boxGame[8]}`,
-//         ],
-//         horizontalMatches: [
-//             `${boxGame[0]}${boxGame[3]}${boxGame[6]}`,
-//             `${boxGame[1]}${boxGame[4]}${boxGame[7]}`,
-//             `${boxGame[2]}${boxGame[5]}${boxGame[8]}`,
-//         ],
-//         diagonalMatches: [
-//             `${boxGame[0]}${boxGame[4]}${boxGame[8]}`,
-//             `${boxGame[2]}${boxGame[4]}${boxGame[6]}`,
-//         ],
-//     }
-
-//     for (const patternGroup of Object.values(matches)) {
-//         if (compareCurrentGameData(patternGroup, patternX)) {
-//             gameWinner = "Player 1 playing with the mark X";
-//             return true;
-//         }
-//     }
-//     for (const patternGroup of Object.values(matches)) {
-//         if (compareCurrentGameData(patternGroup, patternO)) {
-//             gameWinner = "Player 2 playing with the mark O";
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-// function checkGameBoard() {
-//     isThereMatch = checkMatch();
-//     if (!boxGame.includes("")) {
-//         isGameOver = true;
-//     }
-//     updateGameBoard();
-// }
-
-// function checkPlayerChoice(userChoice) {
-//     if ((/^[1-9]$/).test(userChoice) && boxGame[userChoice - 1] === "") {
-//         return true;
-//     }
-//     return false;
-// }
-
-// function showGameResults() {
-//     if (isThereMatch) {
-//         const winnerMessage = `${gameWinner} has won the game.\nCongratulations!`;
-//         console.log(winnerMessage);
-//         alert(winnerMessage);
-//     } else {
-//         const tieMessage = `The game ended in a tie, no one won.\nBetter luck next time.`;
-//         console.log(tieMessage);
-//         alert(tieMessage);
-//     }
-// }
-
-// function playRound() {
-//     while (!isThereMatch && !isGameOver) {
-//         playerTurn = !playerTurn;
-//         const markType = playerTurn ? "X" : "O";
-//         const promptForPlayer = `Player ${playerTurn ? "1" : "2"}, indicate the position number where you want to mark ${markType}\n
-//             | ${boxGame[0] || "1"} | ${boxGame[1] || "2"} | ${boxGame[2] || "3"} |\n
-//             | ${boxGame[3] || "4"} | ${boxGame[4] || "5"} | ${boxGame[5] || "6"} |\n
-//             | ${boxGame[6] || "7"} | ${boxGame[7] || "8"} | ${boxGame[8] || "9"} |\n`;
-//         let choice = prompt(promptForPlayer);
-//         //Safe word to stop the game immediately
-//         if (choice === "goal") {
-//             return;
-//         };
-//         while (!checkPlayerChoice(choice)) {
-//             choice = prompt(`You must choose a valid and available option from 1 to 9\n${promptForPlayer}`);
-//         }
-//         boxGame[choice - 1] = markType;
-//         checkGameBoard();
-//     }
-//     showGameResults();
-// }
-
-//updateGameBoard();
-//playRound();
-console.log(gameBoard.getBoard()[0]);
-gameBoard.setMark(0, "X");
-gameBoard.setMark(8, "O");
-gameBoard.setMark(4, "X");
-gameBoard.setMark(1, "O");
-console.log(gameBoard.getBoard()[0]);
+gameController.playRound();
