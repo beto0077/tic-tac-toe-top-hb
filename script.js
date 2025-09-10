@@ -1,17 +1,3 @@
-//DOM CONNECTION TEST
-const gameTestScreen = document.querySelector(".game-test-screen");
-
-function addNewChild(parent, childContent, childType) {
-    const newChild = document.createElement(!childType ? "p" : childType);
-    newChild.textContent = childContent;
-    parent.appendChild(newChild);
-}
-
-addNewChild(gameTestScreen, "So...");
-addNewChild(gameTestScreen, "Tic");
-addNewChild(gameTestScreen, "Tac");
-addNewChild(gameTestScreen, "Toe");
-//------------------------------------------------------------------------
 const Player = (name, mark) => {
     return { name, mark };
 };
@@ -172,4 +158,4 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
     return { playRound };
 })(Player, gameBoard, displayController);
 
-gameController.playRound();
+//gameController.playRound();
