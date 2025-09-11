@@ -9,6 +9,230 @@ body {
     height: 100dvh;
 }
 
-img {
-    width: 100px;
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+header,
+main,
+footer {
+    border: 1px solid black;
+}
+
+.site-header {
+    flex: 7%;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5em;
+    gap: 1rem;
+
+    .logo {
+        border: 1px solid blue;
+    }
+
+    .logo img {
+        width: 4em;
+    }
+}
+
+.game-container {
+    flex: 86%;
+    display: flex;
+}
+
+.game-info,
+.game-panel,
+.game-control {
+    border: 1px solid green;
+}
+
+.game-info {
+    flex: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    .player-info {
+        border: 1px solid red;
+        height: 40%;
+        width: min(275px, 100%);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .player-marker {
+        border: 1px solid purple;
+        flex: 1;
+        background-image: url("./assets/images/avatar-1299805_1920.png");
+        background-size: 50%;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+
+    .player-name {
+        font-size: 1.5rem;
+        text-align: center;
+        padding: 0.5em;
+    }
+}
+
+.game-panel {
+    flex: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-background {
+    /* flex: 1;
+    height: 60%;
+    display: flex; */
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    max-width: min(700px, 100%);
+
+    background-color: black;
+}
+
+.board-grid {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+    gap: 1rem;
+
+    .board-cell {
+        border: 1px solid darkgoldenrod;
+        background-color: white;
+        background-image: url("./assets/images/paw-312322_1280.png");
+        background-size: 70%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        cursor: pointer;
+    }
+}
+
+.game-control {
+    flex: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        font-size: 2rem;
+        padding: 0.2em 0.5em;
+    }
+}
+
+.game-control .restart-button {
+    display: none;
+}
+
+.game-control .loader-container {
+    display: none;
+}
+
+.site-footer {
+    flex: 7%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 900;
+}
+
+/* Style of the form to create players */
+.player-form {
+    border: 1px solid red;
+    padding: 2rem 1rem;
+    font-size: 1.5rem;
+
+    .main-form-fieldset {
+        border: none;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1em 0;
+        gap: 1em;
+
+        .form-title {
+            font-size: 1.3em;
+        }
+
+        div {
+            display: flex;
+            gap: 0.3em;
+        }
+
+        input:not([type="radio"]) {
+            flex: 1;
+            font-size: 1em;
+        }
+
+        .marker-choice {
+            border: none;
+            display: flex;
+            justify-content: center;
+            gap: 1em;
+            padding: 0.5em 0;
+        }
+
+        .marker-choice input[type="radio"] {
+            display: none;
+        }
+
+        .marker-choice .marker-option {
+            padding: 0.2em;
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            /* transition: all 0.2s ease; */
+        }
+
+        .marker-choice input[type="radio"]:checked+.marker-option {
+            background-color: #333;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .submit-button {
+            align-self: center;
+            font-size: 1.2rem;
+            padding: 0.5em;
+            border-radius: 15px;
+        }
+    }
+}
+
+/* Loading effect while the game creates players */
+.loader-container {
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: min(275px, 100%);
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: clamp(6rem, 5vw, 12rem);
+    height: clamp(6rem, 5vw, 12rem);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

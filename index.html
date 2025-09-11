@@ -10,18 +10,21 @@
 
 <body>
     <header class="site-header">
-        <a href="https://github.com/beto0077"><img src="./assets/images/hb-logo-black.png" alt="Haakon Beck logo"></a>
+        <div class="logo">
+            <a href="https://github.com/beto0077"><img src="./assets/images/hb-logo-black.png"
+                    alt="Haakon Beck logo"></a>
+        </div>
         <h1>Tic Tac Toe TOP HB</h1>
     </header>
     <main class="game-container">
         <div class="game-info">
             <div class="player-info" data-player="1">
                 <div class="player-marker"></div>
-                <p class="player-name"></p>
+                <p class="player-name">Player 1</p>
             </div>
             <div class="player-info" data-player="2">
                 <div class="player-marker"></div>
-                <p class="player-name"></p>
+                <p class="player-name">Player 2</p>
             </div>
         </div>
         <div class="game-panel">
@@ -38,7 +41,7 @@
                     <div class="board-cell" data-index="8"></div>
                 </div>
             </div>
-            <form action="" class="player-form">
+            <form action="" class="player-form" style="display: none;">
                 <fieldset class="main-form-fieldset">
                     <legend class="form-title">Create new player:</legend>
 
@@ -47,30 +50,31 @@
                         <input type="text" id="player-name" name="name" required>
                     </div>
 
-                    <fieldset>
+                    <fieldset class="marker-choice">
                         <legend>Which marker do you want to use?</legend>
                         <div>
                             <input type="radio" id="cross-marker" name="marker" value="cross" required>
-                            <label for="cross-marker">X</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="circle-marker" name="marker" value="circle" required>
-                            <label for="circle-marker">O</label>
+                            <label for="cross-marker" class="marker-option">X</label>
                         </div>
                         <div>
                             <input type="radio" id="random-marker" name="marker" value="random" required checked>
-                            <label for="random-marker">Random</label>
+                            <label for="random-marker" class="marker-option">Random</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="circle-marker" name="marker" value="circle" required>
+                            <label for="circle-marker" class="marker-option">O</label>
                         </div>
                     </fieldset>
-                    <div class="submit-button-container">
-                        <button class="submit-button" type="submit">Create Player</button>
-                    </div>
+                    <button class="submit-button" type="submit">Create Player</button>
                 </fieldset>
             </form>
         </div>
         <div class="game-control">
             <button class="start-button" type="button">Start</button>
             <button class="restart-button" type="button">Restart</button>
+            <div class="loader-container">
+                <div class="spinner"></div>
+            </div>
         </div>
     </main>
     <footer class="site-footer">
