@@ -93,9 +93,10 @@ footer {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    max-width: min(700px, 100%);
+    max-width: min(600px, 100%);
 
     background-color: black;
+    border-radius: 15px;
 }
 
 .board-grid {
@@ -107,8 +108,9 @@ footer {
 
     .board-cell {
         border: 1px solid darkgoldenrod;
+        border-radius: 15px;
         background-color: white;
-        background-image: url("./assets/images/paw-312322_1280.png");
+        /* background-image: url("./assets/images/paw-312322_1280.png"); */
         background-size: 70%;
         background-repeat: no-repeat;
         background-position: center center;
@@ -235,4 +237,53 @@ footer {
     100% {
         transform: rotate(360deg);
     }
+}
+
+/* TEST PLAYER INFO */
+.cross {
+    background-image: url("./assets/images/nordic-cross.png") !important;
+}
+
+.circle {
+    background-image: url("./assets/images/nordic-circle.png") !important;
+}
+
+.arrow {
+    background-image: url("./assets/images/arrow-147173_1280.png") !important;
+}
+
+.crow {
+    background-image: url("./assets/images/crow-307959_1280.png") !important;
+}
+
+.dog {
+    background-image: url("./assets/images/dog-2103628_1280.png") !important;
+}
+
+.eagle {
+    background-image: url("./assets/images/eagle-257507_1280.png") !important;
+}
+
+.square {
+    background-image: url("./assets/images/nordic-square.png") !important;
+}
+
+.splatter {
+    background-image: url("./assets/images/paint-splatter-312092_1280.png") !important;
+}
+
+.paw {
+    background-image: url("./assets/images/paw-312322_1280.png") !important;
+}
+
+.star1 {
+    background-image: url("./assets/images/star-42236_1280.png") !important;
+}
+
+.star2 {
+    background-image: url("./assets/images/star-8152034_1280.png") !important;
+}
+
+.wolf {
+    background-image: url("./assets/images/wild-157677_1280.png") !important;
 }
