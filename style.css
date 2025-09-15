@@ -415,9 +415,11 @@ body {
     0% {
         background-position: 0 0;
     }
+
     50% {
         background-position: 400% 0;
     }
+
     100% {
         background-position: 0 0;
     }
@@ -516,6 +518,10 @@ body {
         flex: 65%;
     }
 
+    .grid-background {
+        max-width: min(375px, 100%);
+    }
+
     .game-control {
         flex: 15%;
         flex-direction: row;
@@ -523,7 +529,7 @@ body {
     }
 
     .game-message-screen {
-        p{
+        p {
             font-size: 1rem;
         }
     }
