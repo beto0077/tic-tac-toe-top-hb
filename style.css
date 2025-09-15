@@ -80,7 +80,7 @@ body {
     .player-marker {
         flex: 1;
         background-image: url("./assets/images/avatar-1299805_1920.png");
-        background-size: 60%;
+        background-size: 55%;
         background-repeat: no-repeat;
         background-position: center center;
         filter: invert(100%);
@@ -330,7 +330,7 @@ body {
             background: rgba(255, 255, 255);
             box-shadow: 1px 1px 5px black;
             border-radius: 15px;
-            height: 40%;
+            height: 50%;
             width: min(375px, 50%);
             background-image: url("./assets/images/hb-logo-black.png");
             background-size: 70%;
@@ -486,6 +486,10 @@ body {
 
 /* ADDITIONAL STYLES FOR MOBILE DEVICES */
 @media (max-width: 768px) {
+    body {
+        font-size: 0.5rem;
+    }
+
     .game-container {
         flex-direction: column;
     }
@@ -516,5 +520,11 @@ body {
         flex: 15%;
         flex-direction: row;
         padding: 0.5rem;
+    }
+
+    .game-message-screen {
+        p{
+            font-size: 1rem;
+        }
     }
 }
