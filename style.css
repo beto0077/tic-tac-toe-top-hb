@@ -502,6 +502,7 @@ body {
 
         .player-info {
             height: 100%;
+            width: min(150px, 100%);
             align-items: center;
         }
 
@@ -511,6 +512,7 @@ body {
 
         .player-name {
             padding: 0.1rem;
+            font-size: 1rem;
         }
     }
 
@@ -519,18 +521,62 @@ body {
     }
 
     .grid-background {
-        max-width: min(375px, 100%);
+        max-width: min(375px, 95%);
     }
 
     .game-control {
         flex: 15%;
         flex-direction: row;
         padding: 0.5rem;
+
+        button {
+            font-size: 1.5rem;
+        }
+
+        .game-stats {
+            font-size: 1rem;
+        }
+    }
+
+    .player-form {
+        max-width: min(375px, 100%);
+        font-size: 1rem;
+
+        .main-form-fieldset {
+            .form-title {
+                font-size: 1.1em;
+            }
+
+            input:not([type="radio"]) {
+                font-size: 1rem;
+            }
+
+            .submit-button {
+                font-size: 1.1rem;
+            }
+        }
     }
 
     .game-message-screen {
-        p {
-            font-size: 1rem;
+        .message-container {
+
+            .winner-marker {
+                height: 40%;
+                width: min(200px, 50%);
+            }
+
+            p {
+                font-size: 1rem;
+            }
         }
+    }
+
+    .loader-container {
+        width: min(100px, 100%);
+    }
+
+    .spinner {
+        width: clamp(3rem, 4vw, 6rem);
+        height: clamp(3rem, 4vw, 6rem);
     }
 }
