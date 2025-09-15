@@ -96,7 +96,7 @@ const displayController = (function () {
         playerForm.style.display = "none";
         loaderCircle.style.display = "none";
         boardContainer.style.display = "block";
-        gameStats.style.display = "block";
+        gameStats.style.display = "flex";
     };
     const updateGameBoard = (cellIndex, mark) => {
         const cell = [...boardCells].find(cell => cell.dataset.index === cellIndex);

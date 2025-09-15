@@ -144,6 +144,7 @@ body {
     }
 
     .game-stats {
+        flex-direction: column;
         font-size: 1.5rem;
         color: white;
     }
@@ -521,7 +522,7 @@ body {
     }
 
     .grid-background {
-        max-width: min(375px, 95%);
+        max-width: min(300px, 85%);
     }
 
     .game-control {
@@ -535,6 +536,15 @@ body {
 
         .game-stats {
             font-size: 1rem;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            column-gap: 0.6rem;
+
+            p:first-child {
+                flex: 100%;
+                text-align: center;
+            }
         }
     }
 
