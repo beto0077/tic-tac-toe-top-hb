@@ -1,5 +1,10 @@
 const Player = (name, mark) => {
-    return { name, mark };
+    let roundsWon = 0;
+
+    const increaseRoundsWon = () => roundsWon++;
+    const getRoundsWon = () => roundsWon;
+
+    return { name, mark, increaseRoundsWon, getRoundsWon };
 };
 
 const gameBoard = (function () {
@@ -13,54 +18,33 @@ const gameBoard = (function () {
 })();
 
 const displayController = (function () {
+    // ========================
+    // Private state & DOM refs
+    // ========================
     const playersInfo = document.querySelectorAll('.player-info');
-    const player1Info = document.querySelector('div[data-player="1"]');
-    const player2Info = document.querySelector('div[data-player="2"]');
     const boardContainer = document.querySelector('.grid-background');
     const boardCells = document.querySelectorAll('.board-cell');
     const playerForm = document.querySelector('.player-form');
     const gameMessageScreen = document.querySelector('.game-message-screen');
-    //const markerOptions = document.querySelectorAll('marker-option');
     const markerOptions = document.querySelectorAll('input[type="radio"]');
     const startButton = document.querySelector('.start-button');
     const restartButton = document.querySelector('.restart-button');
+    const gameStats = document.querySelector('.game-stats');
     const loaderCircle = document.querySelector('.loader-container');
 
-    let onStart = null;
     let onRestart = null;
     let onFormSubmit = null;
     let onClickCell = null;
 
-    const updatePlayerInfo = (playerIndex, player) => {
-        playersInfo[playerIndex].children[0].classList.add(player.mark);
-        playersInfo[playerIndex].children[1].textContent = player.name;
-    }
-
-    // const promptCreatePlayer = (playerNumber) => {
-    //     return `Enter the name of player number ${playerNumber} to continue, if you want to play without a name, press enter to continue:`;
-    // };
-
-    // const promptForPlayer = (currentBoard, player) => {
-    //     return `${player.name}, indicate the position number where you want to mark ${player.mark}\n
-    //     | ${currentBoard[0] || "1"} | ${currentBoard[1] || "2"} | ${currentBoard[2] || "3"} |\n
-    //     | ${currentBoard[3] || "4"} | ${currentBoard[4] || "5"} | ${currentBoard[5] || "6"} |\n
-    //     | ${currentBoard[6] || "7"} | ${currentBoard[7] || "8"} | ${currentBoard[8] || "9"} |\n`
-    // };
-
+    // ========================
+    // Private functions
+    // ========================
     const showPlayerForm = () => {
         gameMessageScreen.style.display = "none";
         startButton.style.display = "none";
         playerForm.style.display = "block";
         loaderCircle.style.display = "flex";
     };
-
-    const showGameBoard = () => {
-        playerForm.style.display = "none";
-        loaderCircle.style.display = "none";
-        boardContainer.style.display = "block";
-        restartButton.style.display = "block";
-    };
-
     const handleFormSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(playerForm);
@@ -71,87 +55,99 @@ const displayController = (function () {
         event.target.reset();
         if (onFormSubmit) onFormSubmit(playerData);
     };
-
     const handlePlayerChoice = (event) => {
         if (onClickCell) onClickCell(event.target.dataset.index);
     };
-
-    const showGameResults = (isThereMatch, gameWinner) => {
-        if (isThereMatch) {
-            const winnerMessage = `${gameWinner.name} has won the game.\nCongratulations!`;
-            console.log(winnerMessage);
-            // alert(winnerMessage);
-            gameMessageScreen.children[0].textContent = winnerMessage;
-        } else {
-            const tieMessage = `The game ended in a tie, no one won.\nBetter luck next time.`;
-            console.log(tieMessage);
-            // alert(tieMessage);
-            gameMessageScreen.children[0].textContent = tieMessage;
-        }
-        gameMessageScreen.style.display = "block";
-    }
-
-    // startButton.addEventListener("click", () => {
-    //     showPlayerForm();
-    //     if (onStart) onStart();
-    // });
-    startButton.addEventListener("click", showPlayerForm);
-    restartButton.addEventListener("click", () => {
-        alert("Work in progress... please refresh the page to play again, thanks for your patience!");
+    const resetGameBoard = () => {
+        boardCells.forEach(cell => {
+            cell.className = "board-cell";
+        });
+        gameMessageScreen.children[0].children[0].className = "winner-marker";
+        gameMessageScreen.style.display = "none";
+        restartButton.style.display = "none";
         if (onRestart) onRestart();
-    });
-
-    playerForm.addEventListener("submit", handleFormSubmit);
-
-    boardCells.forEach(cell => {
-        cell.addEventListener("click", handlePlayerChoice);
-    });
-
-    const disableMarkerOption = (marker) => {
-        const btn = [...markerOptions].find(b => b.value === marker);
-        if (btn) btn.disabled = true;
     };
-    const updateGameBoard = (cellIndex, mark) => {
-        const cell = [...boardCells].find(cell => cell.dataset.index === cellIndex);
-        //if (cell) console.log(`I found the cell bro => ${cell.dataset.index} => mark:${mark}`);
-        if (cell) cell.classList.add(mark);
-    }
-    const bindStart = (callback) => {
-        onStart = callback;
-    };
-    const bindRestart = (callback) => {
-        onRestart = callback;
-    };
+
+    // ========================
+    // Public API (binders)
+    // ========================
     const bindFormSubmit = (callback) => {
         onFormSubmit = callback;
     };
     const bindClickCell = (callback) => {
         onClickCell = callback;
     };
-    return { updatePlayerInfo, showGameBoard, showGameResults, disableMarkerOption, updateGameBoard, bindStart, bindRestart, bindFormSubmit, binClickCell: bindClickCell };
+    const bindRestart = (callback) => {
+        onRestart = callback;
+    };
+
+    // ========================
+    // Public API (operations)
+    // ========================
+    const updatePlayerInfo = (playerIndex, player) => {
+        playersInfo[playerIndex].children[0].classList.add(player.mark);
+        playersInfo[playerIndex].children[1].textContent = player.name;
+    };
+    const disableMarkerOption = (marker) => {
+        const btn = [...markerOptions].find(b => b.value === marker);
+        if (btn) btn.disabled = true;
+    };
+    const showGameBoard = () => {
+        playerForm.style.display = "none";
+        loaderCircle.style.display = "none";
+        boardContainer.style.display = "block";
+        gameStats.style.display = "block";
+    };
+    const updateGameBoard = (cellIndex, mark) => {
+        const cell = [...boardCells].find(cell => cell.dataset.index === cellIndex);
+        if (cell) cell.classList.add(mark);
+    };
+    const showGameResults = (isThereMatch, gameWinner) => {
+        if (isThereMatch) {
+            const winnerMessage = `${gameWinner.name} has won the game.\nCongratulations!`;
+            gameMessageScreen.children[0].children[0].classList.add(gameWinner.mark);
+            gameMessageScreen.children[0].children[1].textContent = winnerMessage;
+        } else {
+            const tieMessage = `The game ended in a tie, no one won.\nBetter luck next time.`;
+            gameMessageScreen.children[0].children[1].textContent = tieMessage;
+        }
+        gameMessageScreen.style.display = "block";
+        restartButton.style.display = "block";
+    };
+    const updateGameStats = (players, tiedRounds) => {
+        gameStats.children[1].textContent = `${players[0].name}: ${players[0].getRoundsWon()}`;
+        gameStats.children[2].textContent = `${players[1].name}: ${players[1].getRoundsWon()}`;
+        gameStats.children[3].textContent = `Tied rounds: ${tiedRounds}`;
+    };
+
+    // ========================
+    // Event listeners
+    // ========================
+    startButton.addEventListener("click", showPlayerForm);
+    playerForm.addEventListener("submit", handleFormSubmit);
+    boardCells.forEach(cell => {
+        cell.addEventListener("click", handlePlayerChoice);
+    });
+    restartButton.addEventListener("click", resetGameBoard);
+
+    return { bindFormSubmit, bindClickCell, bindRestart, updatePlayerInfo, disableMarkerOption, showGameBoard, updateGameBoard, showGameResults, updateGameStats };
 })();
 
 const gameController = (function (playerFactory, boardModule, displayCtrl) {
-    let players = [];
+    // ========================
+    // Private state
+    // ========================
     const randomMarks = ["arrow", "crow", "dog", "eagle", "square", "splatter", "paw", "star1", "star2", "wolf"];
+    let players = [];
     let playerTurn = true;
     let isThereMatch = false;
     let isGameOver = false;
     let gameWinner = null;
+    let tiedRounds = 0;
 
-    const createPlayers = () => {
-        let playerName = "";
-        for (let index = 1; index <= 2; index++) {
-            if (index === 1) {
-                playerName = prompt(displayCtrl.promptCreatePlayer(index));
-                players.push(playerFactory(playerName || "Player 1", "X"));
-            } else {
-                playerName = prompt(displayCtrl.promptCreatePlayer(index));
-                players.push(playerFactory(playerName || "Player 2", "O"));
-            }
-        }
-    };
-
+    // ========================
+    // Private functions
+    // ========================
     const generateRandomMark = () => {
         if (players.length > 0) {
             const filteredList = randomMarks.filter(mark => mark !== players[players.length - 1].mark);
@@ -161,16 +157,15 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
         }
     };
 
-    const handleFormSubmit = (playerData) => {
+    const createPlayers = (playerData) => {
         players.push(playerFactory(playerData.name, playerData.mark === "random" ? generateRandomMark() : playerData.mark));
         displayCtrl.updatePlayerInfo(players.length - 1, players[players.length - 1]);
-        // console.log(players);
-        // console.log(players.length);
         if (players[players.length - 1].mark === "cross" || players[players.length - 1].mark === "circle") {
             displayCtrl.disableMarkerOption(players[players.length - 1].mark);
         }
         if (players.length === 2) {
             displayCtrl.showGameBoard();
+            displayCtrl.updateGameStats(players, tiedRounds);
         }
     };
 
@@ -181,10 +176,10 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
             }
         }
         return false;
-    }
+    };
+
     const checkMatch = (currentBoard) => {
-        const player1WinningPattern = (players[0].mark).repeat(3);
-        const player2WinningPattern = (players[1].mark).repeat(3);
+        let playerWinningPattern = "";
         const matches = {
             horizontalMatches: [
                 `${currentBoard[0]}${currentBoard[1]}${currentBoard[2]}`,
@@ -203,76 +198,69 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
         }
 
         if (playerTurn) {
+            playerWinningPattern = (players[0].mark).repeat(3);
             for (const patternGroup of Object.values(matches)) {
-                if (compareCurrentBoardData(patternGroup, player1WinningPattern)) {
+                if (compareCurrentBoardData(patternGroup, playerWinningPattern)) {
                     gameWinner = players[0];
+                    players[0].increaseRoundsWon();
                     return true;
                 }
             }
         } else {
+            playerWinningPattern = (players[1].mark).repeat(3);
             for (const patternGroup of Object.values(matches)) {
-                if (compareCurrentBoardData(patternGroup, player2WinningPattern)) {
+                if (compareCurrentBoardData(patternGroup, playerWinningPattern)) {
                     gameWinner = players[1];
+                    players[1].increaseRoundsWon();
                     return true;
                 }
             }
         }
-
         return false;
-    }
+    };
 
     const checkGameBoard = (currentBoard) => {
         isThereMatch = checkMatch(currentBoard);
         if (!currentBoard.includes("")) {
             isGameOver = true;
+            tiedRounds++;
         }
-    }
+    };
 
     const checkPlayerChoice = (userChoice) => {
         if ((/^[0-8]$/).test(userChoice) && boardModule.getBoard()[userChoice] === "") {
             return true;
         }
         return false;
-    }
+    };
 
     const playRound = (cellNumber) => {
         if (checkPlayerChoice(cellNumber)) {
             boardModule.setMark(cellNumber, playerTurn ? players[0].mark : players[1].mark);
-            console.log(`Cell: ${cellNumber}, occupied!`);
             displayCtrl.updateGameBoard(cellNumber, playerTurn ? players[0].mark : players[1].mark);
             checkGameBoard(boardModule.getBoard());
             if (isThereMatch || isGameOver) {
                 displayCtrl.showGameResults(isThereMatch, gameWinner);
+                displayCtrl.updateGameStats(players, tiedRounds);
             }
             playerTurn = !playerTurn;
-        } else {
-            console.log("Pick another cell bro...");
         }
     };
 
-    displayCtrl.bindFormSubmit(handleFormSubmit);
-    displayCtrl.binClickCell(playRound);
-    // const playRound = () => {
-    //     createPlayers();
-    //     while (!isThereMatch && !isGameOver) {
-    //         playerTurn = !playerTurn;
-    //         let choice = prompt(displayCtrl.promptForPlayer(boardModule.getBoard(), playerTurn ? players[0] : players[1]));
-    //         //Safe word to stop the game immediately
-    //         if (choice === "goal") {
-    //             return;
-    //         };
-    //         while (!checkPlayerChoice(choice)) {
-    //             choice = prompt(`You must choose a valid and available option from 1 to 9\n${displayCtrl.promptForPlayer(boardModule.getBoard(), playerTurn ? players[0] : players[1])}`);
-    //         }
-    //         boardModule.setMark(choice - 1, playerTurn ? players[0].mark : players[1].mark);
-    //         checkGameBoard(boardModule.getBoard());
-    //     }
-    //     displayCtrl.showGameResults(isThereMatch, gameWinner);
-    // }
+    const resetGameData = () => {
+        for (let index = 0; index < boardModule.getBoard().length; index++) {
+            boardModule.setMark(index, "");
+        }
+        isThereMatch = false;
+        isGameOver = false;
+        gameWinner = null;
+    };
 
-    //displayCtrl.bindStart(playRound);
+    // ========================
+    // Connections with external IIFEs
+    // ========================
+    displayCtrl.bindFormSubmit(createPlayers);
+    displayCtrl.bindClickCell(playRound);
+    displayCtrl.bindRestart(resetGameData);
 
-    return { playRound };
 })(Player, gameBoard, displayController);
-
-//gameController.playRound();

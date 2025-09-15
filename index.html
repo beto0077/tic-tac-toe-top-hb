@@ -69,12 +69,22 @@
                 </fieldset>
             </form>
             <div class="game-message-screen">
-                <p>Welcome to this Tic Tac Toe game developed by Haakon Beck, I hope you have fun, press Start to start the game.</p>
+                <div class="message-container">
+                    <div class="winner-marker"></div>
+                    <p>Welcome to this Tic Tac Toe game developed by Haakon Beck, I hope you have fun, press Start to
+                        start the game.</p>
+                </div>
             </div>
         </div>
         <div class="game-control">
             <button class="start-button" type="button">Start</button>
             <button class="restart-button" type="button">Restart</button>
+            <div class="game-stats" style="display: none;">
+                <p>Rounds won by:</p>
+                <p class="player-stats" data-player="1"></p>
+                <p class="player-stats" data-player="2"></p>
+                <p class="game-ties"></p>
+            </div>
             <div class="loader-container">
                 <div class="spinner"></div>
             </div>
