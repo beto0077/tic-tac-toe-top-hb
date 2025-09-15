@@ -102,6 +102,20 @@ const displayController = (function () {
         const cell = [...boardCells].find(cell => cell.dataset.index === cellIndex);
         if (cell) cell.classList.add(mark);
     };
+    const updatePlayerTurn = (playerTurn, isThereMatch, isGameOver) => {
+        const hasActiveClass = playersInfo[0].classList.contains('player-turn') || playersInfo[1].classList.contains('player-turn');
+
+        if (hasActiveClass) {
+            if (isThereMatch || isGameOver) {
+                playersInfo[playerTurn ? 0 : 1].classList.toggle('player-turn');
+            } else {
+                playersInfo[0].classList.toggle('player-turn');
+                playersInfo[1].classList.toggle('player-turn');
+            }
+        } else {
+            playersInfo[playerTurn ? 0 : 1].classList.toggle('player-turn');
+        }
+    };
     const showGameResults = (isThereMatch, gameWinner) => {
         if (isThereMatch) {
             const winnerMessage = `${gameWinner.name} has won the game.\nCongratulations!`;
@@ -130,7 +144,7 @@ const displayController = (function () {
     });
     restartButton.addEventListener("click", resetGameBoard);
 
-    return { bindFormSubmit, bindClickCell, bindRestart, updatePlayerInfo, disableMarkerOption, showGameBoard, updateGameBoard, showGameResults, updateGameStats };
+    return { bindFormSubmit, bindClickCell, bindRestart, updatePlayerInfo, disableMarkerOption, showGameBoard, updateGameBoard, updatePlayerTurn, showGameResults, updateGameStats };
 })();
 
 const gameController = (function (playerFactory, boardModule, displayCtrl) {
@@ -166,6 +180,7 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
         if (players.length === 2) {
             displayCtrl.showGameBoard();
             displayCtrl.updateGameStats(players, tiedRounds);
+            displayCtrl.updatePlayerTurn(playerTurn, isThereMatch, isGameOver);
         }
     };
 
@@ -242,8 +257,12 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
             if (isThereMatch || isGameOver) {
                 displayCtrl.showGameResults(isThereMatch, gameWinner);
                 displayCtrl.updateGameStats(players, tiedRounds);
+                displayCtrl.updatePlayerTurn(playerTurn, isThereMatch, isGameOver);
+                playerTurn = !playerTurn;
+                return;
             }
             playerTurn = !playerTurn;
+            displayCtrl.updatePlayerTurn(playerTurn, isThereMatch, isGameOver);
         }
     };
 
@@ -254,6 +273,7 @@ const gameController = (function (playerFactory, boardModule, displayCtrl) {
         isThereMatch = false;
         isGameOver = false;
         gameWinner = null;
+        displayCtrl.updatePlayerTurn(playerTurn, isThereMatch, isGameOver);
     };
 
     // ========================

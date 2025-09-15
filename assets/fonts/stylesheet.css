@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Go';
+    src: url('GoRegular.woff2') format('woff2'),
+        url('GoRegular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SYN Nova';
+    src: url('SYNNova-Regular.woff2') format('woff2'),
+        url('SYNNova-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Paete Round';
+    src: url('PaeteRound.woff2') format('woff2'),
+        url('PaeteRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

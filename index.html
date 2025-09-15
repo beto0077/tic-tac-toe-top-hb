@@ -11,7 +11,7 @@
 <body>
     <header class="site-header">
         <div class="logo">
-            <a href="https://github.com/beto0077"><img src="./assets/images/hb-logo-black.png"
+            <a href="https://github.com/beto0077"><img src="./assets/images/hb-logo-white.png"
                     alt="Haakon Beck logo"></a>
         </div>
         <h1>Tic Tac Toe TOP HB</h1>
@@ -65,7 +65,7 @@
                             <label for="circle-marker" class="marker-option">O</label>
                         </div>
                     </fieldset>
-                    <button class="submit-button" type="submit">Create Player</button>
+                    <button class="btn-style submit-button" type="submit">Create Player</button>
                 </fieldset>
             </form>
             <div class="game-message-screen">
@@ -77,15 +77,15 @@
             </div>
         </div>
         <div class="game-control">
-            <button class="start-button" type="button">Start</button>
-            <button class="restart-button" type="button">Restart</button>
+            <button class="btn-style start-button" type="button">Start</button>
+            <button class="btn-style restart-button" type="button" style="display: none;">Restart</button>
             <div class="game-stats" style="display: none;">
                 <p>Rounds won by:</p>
                 <p class="player-stats" data-player="1"></p>
                 <p class="player-stats" data-player="2"></p>
                 <p class="game-ties"></p>
             </div>
-            <div class="loader-container">
+            <div class="loader-container" style="display: none;">
                 <div class="spinner"></div>
             </div>
         </div>

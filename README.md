@@ -19,3 +19,5 @@ star-2 => Image by <a href="https://pixabay.com/users/gdj-1086657/?utm_source=li
 avatar => Image by <a href="https://pixabay.com/users/openclipart-vectors-30363/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1299805">OpenClipart-Vectors</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1299805">Pixabay</a>
 
 arrow => Image by <a href="https://pixabay.com/users/openclipart-vectors-30363/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=147173">OpenClipart-Vectors</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=147173">Pixabay</a>
+
+Fonts: <a href="https://www.fontsquirrel.com/fonts/go">Go</a>, <a href="https://www.fontsquirrel.com/fonts/Paete-Round">Paete Round</a>, <a href="https://www.fontsquirrel.com/fonts/syn-nova">Syn Nova</a>
